@@ -22,9 +22,12 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 400 private_key.pem
-     
-        # SSH into EC2 build & run Docker container
-        rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" --exclude '.git/' . $USER@$HOST:~/test_project <<EOF
+
+        # Copy entire codebase to EC2
+        rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" --exclude '.git/' . $USER@$HOST:~/test_project 
+
+        # SSH into EC2 and build & run Docker container
+        ssh -i private_key.pem -o StrictHostKeyChecking=no $USER@$HOST <<EOF
           cd ~/test_project
           docker stop myapp-container
           docker rm myapp-container
