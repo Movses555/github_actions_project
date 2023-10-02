@@ -40,8 +40,10 @@ jobs:
         # SSH into EC2 and build & run Docker container
         ssh -i private_key.pem -o StrictHostKeyChecking=no $USER@$HOST <<EOF
           cd ~/test_project
+          docker stop myapp-container
+          docker rmi myapp:latest
           docker build -t myapp:latest .
-          docker run -d myapp:latest
+          docker run --name myapp-container -d -p 5515:80 myapp:latest
         EOF
 
         rm -f private_key.pem    
