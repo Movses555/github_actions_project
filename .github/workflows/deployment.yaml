@@ -28,22 +28,22 @@ jobs:
 
         rm -f private_key.pem  
 
-    # - name: Build Docker image and run container on EC2
-    #   env:
-    #     PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-    #     HOST: ${{ secrets.EC2_HOST }}
-    #     USER: ${{ secrets.EC2_USER }}
-    #   run: |
-    #     echo "$PRIVATE_KEY" > private_key.pem
-    #     chmod 400 private_key.pem
+    - name: Build Docker image and run container on EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+        USER: ${{ secrets.EC2_USER }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key.pem
+        chmod 400 private_key.pem
 
-    #     # SSH into EC2 and build & run Docker container
-    #     ssh -i private_key.pem -o StrictHostKeyChecking=no $USER@$HOST <<EOF
-    #       cd ~/test_project
-    #       docker build -t myapp .
-    #       docker run -d --name myapp-container -p 80:80 myapp
-    #     EOF
+        # SSH into EC2 and build & run Docker container
+        ssh -i private_key.pem -o StrictHostKeyChecking=no $USER@$HOST <<EOF
+          cd ~/test_project
+          docker build -t myapp:latest .
+          docker run -d myapp:latest
+        EOF
 
-    #     rm -f private_key.pem    
+        rm -f private_key.pem    
           
 
